@@ -23,6 +23,7 @@
 #include "lua/net/SocketAddress.hxx"
 #include "lua/net/ControlClient.hxx"
 #include "lua/event/Init.hxx"
+#include "util/ByteSizes.hxx"
 #include "util/PrintException.hxx"
 #include "util/ScopeExit.hxx"
 #include "config.h"
@@ -97,9 +98,9 @@ try {
 		return luaL_argerror(L, 2, "function expected");
 
 	const auto max_size = GetGlobalInt(L, "max_size");
-	if (max_size < 1024)
+	if (max_size < (lua_Integer)1_KiB)
 		throw std::runtime_error("`max_size` is too small");
-	if (max_size > 1024 * 1024 * 1024)
+	if (max_size > (lua_Integer)1_GiB)
 		throw std::runtime_error("`max_size` is too large");
 
 	auto handler = std::make_shared<Lua::Value>(L, Lua::StackIndex(2));
@@ -149,7 +150,7 @@ SetupConfigState(lua_State *L, Instance &instance)
 	Lua::InitControlClient(L);
 	RegisterLuaResolver(L);
 
-	static constexpr lua_Integer DEFAULT_MAX_SIZE = 16 * 1024 * 1024;
+	static constexpr lua_Integer DEFAULT_MAX_SIZE = 16_MiB;
 	Lua::SetGlobal(L, "max_size", DEFAULT_MAX_SIZE);
 
 #ifdef HAVE_LIBSYSTEMD

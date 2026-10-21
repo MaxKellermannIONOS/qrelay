@@ -13,6 +13,7 @@
 #include "system/Error.hxx"
 #include "io/Pipe.hxx"
 #include "io/UniqueFileDescriptor.hxx"
+#include "util/ByteSizes.hxx"
 #include "util/ScopeExit.hxx"
 #include "util/SpanCast.hxx"
 
@@ -165,7 +166,7 @@ try {
 
 	if (dest.empty()) {
 		/* buffer is full; discard the rest */
-		std::array<std::byte, 1024> discard_buffer;
+		std::array<std::byte, 1_KiB> discard_buffer;
 		return ReadPipeOrThrow(fd, discard_buffer) > 0;
 	}
 
