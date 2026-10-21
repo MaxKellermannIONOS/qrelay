@@ -50,9 +50,6 @@ MakeListener(SocketAddress address)
 		.bind_address = AllocatedSocketAddress{address},
 		.listen = 64,
 		.mode = 0666,
-
-		/* we want to receive the client's UID */
-		.pass_cred = true,
 	};
 
 	return config.Create(socktype);
